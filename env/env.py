@@ -76,4 +76,4 @@ STOCK_TITLE_FILED_NAME = 'stock_title'
 # NUMBER OF STOCKS TO RUN 
 NUMBER_OF_STOCKS_TO_RUN = 450
 # FININ KEY 
-FIN_KEY = "d0nm841r01qn5ghkk9g0d0nm841r01qn5ghkk9gg"
+FIN_KEY = "*********"
