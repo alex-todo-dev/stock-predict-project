@@ -15,7 +15,7 @@ def plot_rsi(df: pd.DataFrame, close_price_column :str = 'Close',rsi_column: str
     title : str
         Title of the plot.
     """
-    # df.to_csv('rsi_data.csv')
+    df.to_csv('rsi_data.csv')
 
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 8), sharex=True)
 

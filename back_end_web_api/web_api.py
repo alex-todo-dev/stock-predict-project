@@ -11,7 +11,7 @@ tracked_stocks_collection = db["buy_signal_track"]  # your collection name
 trade_stock_data_collection = db["sp500_stocks_data"]
 training_data_collection = db["training_data"]
 prediction_metrics_collection = db["tracked_stock_metrics"]
-
+news_sentiment_collection = db["stock_news_sentimental"]
 @app.route("/", methods=["GET"])
 def home():
     return "Welcome to the Stock Predictor Home Page api!"
@@ -40,6 +40,17 @@ def training_data(stock: str):
 def result_data(stock: str):
     prediction_result_data = prediction_metrics_collection.find_one({"stock_title": stock},{'_id': 0})
     return jsonify(prediction_result_data)
+
+@app.route('/stock-sentiment/<symbol>', methods=['GET'])
+def get_stock_sentiment(symbol):
+    doc = news_sentiment_collection.find_one({"stock_title": symbol})
+
+    if doc:
+        doc['_id'] = str(doc['_id'])  # Convert ObjectId to string for JSON serialization
+        return jsonify(doc)
+    else:
+        return jsonify(None)
+
 
 if __name__ == "__main__":
     app.run(port=5001, debug=True)

@@ -41,3 +41,17 @@
     white-space: pre-line;
   }
   
+  .sentiment-indicator {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+  }
+  
+  .sentiment-label {
+    vertical-align: middle;
+  }
+  

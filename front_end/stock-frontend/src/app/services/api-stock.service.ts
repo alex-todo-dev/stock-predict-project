@@ -5,6 +5,7 @@ import { TrackedStock } from '../models/tracked-stocks.interface';
 import { trainingMetrics } from '../models/training_data';
 import { Observable } from 'rxjs';
 import { predictionMetrics } from '../models/prediction-metrics';
+import { SentimentResult } from '../models/news-sentimental';
 @Injectable({
   providedIn: 'root'
 })
@@ -25,5 +26,10 @@ export class ApiStockService {
   get_predicted_error(stock: string): Observable<predictionMetrics> {
     return this.httpClient.get<predictionMetrics>(apiUrls.base_url + apiUrls.get_predicted_metrics + stock);
   }
+
+  getSentiments(stock: string): Observable<SentimentResult> {
+    return this.httpClient.get<SentimentResult>(apiUrls.base_url + apiUrls.get_news_sentimental + stock);
+  }
+
 }
 

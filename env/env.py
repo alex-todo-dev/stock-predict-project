@@ -23,6 +23,8 @@ route_prediction_module = '/prediction'
 route_start_prediction = '/prediction'
 # tracked stock metrics calculation route
 route_tracked_stocks_metrics = '/tracked-stocks-metrics'
+# news anylysis route
+route_news_analysis = '/news-analysis'
 # packages NAMES 
 # first_stock_data_fetch
 first_data_fetch_module_name = 'FIRST_DATA_FETCH_MODULE'
@@ -72,4 +74,6 @@ COLUMN_CALCULATION_NAME_RSI = 'Close'
 # Stock title
 STOCK_TITLE_FILED_NAME = 'stock_title'
 # NUMBER OF STOCKS TO RUN 
-NUMBER_OF_STOCKS_TO_RUN = 1
+NUMBER_OF_STOCKS_TO_RUN = 450
+# FININ KEY 
+FIN_KEY = "d0nm841r01qn5ghkk9g0d0nm841r01qn5ghkk9gg"

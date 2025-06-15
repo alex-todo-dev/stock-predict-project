@@ -66,6 +66,7 @@ def indicator_calculation() -> Dict[str, str]:
     # Buy signal calculation
     try:
         stock_df: pd.DataFrame = generate_buy_signal(stock_df)
+        stock_df.to_csv('testing_data.csv')
     except Exception as e:
         logger.error(f"{env.stock_indicator_calculation_module_name}: Error performing buy signal calculation for stock {stock_title}: {e}")
         return {"status": "error"}

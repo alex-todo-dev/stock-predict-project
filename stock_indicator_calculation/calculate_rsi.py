@@ -28,7 +28,7 @@ def calculate_rsi(
     pandas.DataFrame
         DataFrame with an additional RSI column.
     """
-    from .plot_rsi_chart import plot_rsi
+    # from .plot_rsi_chart import plot_rsi
     delta = df[column].diff()
 
     gain = delta.where(delta > 0, 0.0)

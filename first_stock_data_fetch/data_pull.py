@@ -5,7 +5,7 @@ import requests
 from env import env
 from logger import logger
 from flask import Blueprint
-
+import time
 data_pull_module = Blueprint(env.route_stock_data_pull, __name__)
 
 @data_pull_module.route('/stock-data-pull')
@@ -76,7 +76,7 @@ def data_pull() -> str:
         except Exception as e:
             logger.error(f"{env.first_data_fetch_module_name}: failed to pull stock data for {stock_name}")
             print("failed to pull stock data for:", stock_name, ':', e)
-
+        time.sleep(1.5)  # delay to reduce 401s
     logger.info("****************************************************************************")
     logger.info(f"{env.first_data_fetch_module_name}: Data pull completed")
     logger.info("Starting data cleaner module")

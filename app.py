@@ -8,6 +8,8 @@ from first_stock_data_fetch.data_pull import data_pull_module
 from model_trainning.data_processor import model_generation_module
 from prediction_module.predicition_module_api import prediction_module
 from tracked_stocks_metrics.tracked_stock_metrics_calc_api import tracked_stocks_metrics_module
+from stock_news.stock_news_api import news_analysis_module
+
 app = Flask(__name__)
 
 # Register blueprints
@@ -20,6 +22,7 @@ app.register_blueprint(nn_model_train_module)
 app.register_blueprint(clean_module)
 app.register_blueprint(prediction_module)
 app.register_blueprint(tracked_stocks_metrics_module)
+app.register_blueprint(news_analysis_module)
 
 if __name__ == "__main__":
     app.run(debug=True)
