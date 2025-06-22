@@ -9,6 +9,8 @@ route_indicator_calculation = '/indicators_generation'
 route_collect_buy_signal = '/collect-buy-signal-stock'
 # nn_training_model 
 route_nn_training_model = '/nn-training-model'
+# lstm training 
+route_lstm_training_model = '/lstm-training-model'
 # cleaner module
 route_cleaner_module = '/cleaner-module'
 # price predictor route 
@@ -21,6 +23,8 @@ route_model_train = '/model-train'
 route_prediction_module = '/prediction'
 # start stocks prediction route 
 route_start_prediction = '/prediction'
+# start lstm prediction 
+route_start_lstm_prediction = '/lstm-prediction'
 # tracked stock metrics calculation route
 route_tracked_stocks_metrics = '/tracked-stocks-metrics'
 # news anylysis route
@@ -49,6 +53,8 @@ COLLECTION_NAME_STOCKS_UNDER_TRACKING = "buy_signal_track"
 COLLECTION_NAME_SP500_STOCKS_DATA = "sp500_stocks_data"
 # colection training data 
 COLLECTION_NAME_TRAINING_DATA = "training_data"
+# collection lstm training data 
+COLLECTION_LSTM_TRAINING_DATA = "lstm_training_data"
 # Mongo DB port number 
 MONGO_DB_PORT_NUMBER = 27017
 # stock filled name 
@@ -57,6 +63,8 @@ STOCK_TITLE_FILED_NAME = "stock_title"
 TRACKING_FIELD_NAME_14_DAYS = "days_tracking"
 # path for NN models store 
 model_path: str = f"model_trainning/nn_model/models/"
+# path for LSTM model 
+lstm_model_path: str = f"model_trainning/lstm_model/models/"
 # days pull for stock data
 stock_data_pull_days = 365
 # stock cleaner days old 
@@ -74,6 +82,10 @@ COLUMN_CALCULATION_NAME_RSI = 'Close'
 # Stock title
 STOCK_TITLE_FILED_NAME = 'stock_title'
 # NUMBER OF STOCKS TO RUN 
-NUMBER_OF_STOCKS_TO_RUN = 450
+NUMBER_OF_STOCKS_TO_RUN = 490
 # FININ KEY 
-FIN_KEY = "*********"
+FIN_KEY = "d0nm841r01qn5ghkk9g0d0nm841r01qn5ghkk9gg"
+# lstm sequince lenght 
+lstm_sequence_length = 60  # e.g., use past 60 days to predict next 5
+# lstm days predict
+lstm_future_days = 5

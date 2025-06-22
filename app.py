@@ -9,7 +9,8 @@ from model_trainning.data_processor import model_generation_module
 from prediction_module.predicition_module_api import prediction_module
 from tracked_stocks_metrics.tracked_stock_metrics_calc_api import tracked_stocks_metrics_module
 from stock_news.stock_news_api import news_analysis_module
-
+from model_trainning.lstm_model.lstm_train_api import lstm_model_train_module
+from prediction_module_lstm.predict_next_five_days_api import prediction_module_lstm
 app = Flask(__name__)
 
 # Register blueprints
@@ -23,6 +24,10 @@ app.register_blueprint(clean_module)
 app.register_blueprint(prediction_module)
 app.register_blueprint(tracked_stocks_metrics_module)
 app.register_blueprint(news_analysis_module)
+app.register_blueprint(lstm_model_train_module)
+app.register_blueprint(prediction_module_lstm)
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+    # docker run --name mongodb -d -p 27017:27017 -v mongodata:/data/db mongo

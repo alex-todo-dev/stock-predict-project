@@ -24,16 +24,17 @@ export class StockDataCardComponent implements OnInit{
   ngOnInit(): void {
     this.apiService.getSentiments(this.stockTitle).subscribe(data => {
       this.sentiment = data;
-      console.log("sentiment data for stock:" + this.stockTitle, this.sentiment);
+      // console.log("sentiment data for stock:" + this.stockTitle, this.sentiment);
     });
 
     this.apiService.get_predicted_error(this.stockTitle).subscribe(data => {
       this.stockPredictMetric = data;
-      console.log("chart data from predict mterics component:", this.stockPredictMetric);
+      // console.log("chart data from predict mterics component:", this.stockPredictMetric);
     });
 
-    this.apiService.getSentiments(this.stockTitle).subscribe(data => {
-      
+    this.apiService.get_tracked_stock_training_metrics(this.stockTitle).subscribe(data => {
+      this.stockMetric = data;
+      console.log("mteric", this.stockMetric)
     })
   }
   constructor(private apiService: ApiStockService) { 

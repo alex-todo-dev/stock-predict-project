@@ -7,3 +7,9 @@ requests.get(env.base_url + env.route_start_prediction)
 requests.get(env.base_url + env.route_tracked_stocks_metrics)
 requests.get(env.base_url + env.route_news_analysis)
 
+
+# json_data = {
+#             "stock_title": "MMM"
+#         }
+# response = requests.post(env.base_url + env.route_lstm_training_model, json = json_data)
+# print(response)

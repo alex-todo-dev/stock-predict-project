@@ -25,6 +25,7 @@ def clean_old_tracking() -> dict:
     db = client['stock_predict']
     buy_signal_collection = db['buy_signal_track']
     training_data_collection = db['training_data']
+    lstm_training_data_collection = db[env.COLLECTION_LSTM_TRAINING_DATA]
 
     # Calculate the cut off date for the cleaning
     cut_off_date = datetime.now() - timedelta(days=env.cleaner_days_old)
@@ -43,6 +44,10 @@ def clean_old_tracking() -> dict:
     # Delete old training data from the training_data collection
     deleted_items_from_training_collection = training_data_collection.delete_many({"training_date": {"$lt": cut_off_date}})
     logger.info(f"{env.cleaner_module_name}:Cleaned old training data from DB trining collection:" +  str(deleted_items_from_training_collection.deleted_count))
+
+    # delete old lstm training data 
+    deleted_lstm_items_from_training_collection = lstm_training_data_collection.delete_many({"training_date": {"$lt": cut_off_date}})
+    logger.info(f"{env.cleaner_module_name}:Cleaned old LSTM training data from DB trining collection:" +  str(deleted_lstm_items_from_training_collection.deleted_count))
     logger.info(f"{env.cleaner_module_name}:Old tracking data clean completed")
 
     logger.info(f"{env.cleaner_module_name}:Start prediction porocessing")

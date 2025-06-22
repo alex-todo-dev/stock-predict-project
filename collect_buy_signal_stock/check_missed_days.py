@@ -61,4 +61,4 @@ def check_and_fill_missed_days(stock_title:str) -> int:
     print("missed dates:", missed_tracked_dates)
 
 # if __name__ == "__main__":
-#     check_and_fill_missed_days("ALLE")
+#     check_and_fill_missed_days("ADBE")

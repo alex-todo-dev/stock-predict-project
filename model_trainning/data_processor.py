@@ -39,6 +39,7 @@ def pull_tracked_stock():
             "stock_title": stock_title
         }
         response = requests.post(env.base_url + env.route_nn_training_model, json = json_data)
+        response = requests.post(env.base_url + env.route_lstm_training_model, json = json_data)
         logger.info(f"DATA PROCESSOR:Response from model trainer : {response.text}")
         logger.info(f"DATA PROCESSOR:*************************************************")
     return {"status": "success"}, 200
