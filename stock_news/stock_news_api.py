@@ -18,7 +18,17 @@ def news_analysis()->str:
 
     # Get list of stock symbols from MongoDB
     stock_symbols = list(buy_signal_col.distinct("stock_title"))
-    print("stock_symbols:", stock_symbols)
+ 
+    # Get tickers already processed
+    existing_tickers = sentiment_col.distinct('stock_title')
+
+    # Separate into "new" and "already processed"
+    new_tickers = [t for t in stock_symbols if t not in existing_tickers]
+    existing_tickers_in_list = [t for t in stock_symbols if t in existing_tickers]
+
+    # Final ordered list: new ones first
+    ordered_tickers = new_tickers + existing_tickers_in_list
+
     # # === Step 1: Setup Finnhub client ===
     api_key = env.FIN_KEY  # Replace with your API key
     finnhub_client = finnhub.Client(api_key=api_key)
@@ -30,7 +40,7 @@ def news_analysis()->str:
     # # === Step 3: Fetch company news ===
     news_by_symbol = {}
 
-    for symbol in stock_symbols:
+    for symbol in ordered_tickers:
         try:
             news = finnhub_client.company_news(
                 symbol, 
