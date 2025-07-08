@@ -1,9 +1,14 @@
 from flask import Flask, render_template, jsonify
 from pymongo import MongoClient
 from flask_cors import CORS
+from flask import Blueprint
+from env import env
+# app = Flask(__name__)
+# CORS(app)
 
-app = Flask(__name__)
-CORS(app)
+
+web_api_module = Blueprint(env.blue_print_back_end_api, __name__)
+
 # Connect to your local MongoDB or Atlas
 client = MongoClient("mongodb://localhost:27017/")  # or your Mongo URI
 db = client["stock_predict"]  # your database name
@@ -12,36 +17,38 @@ trade_stock_data_collection = db["sp500_stocks_data"]
 training_data_collection = db["training_data"]
 prediction_metrics_collection = db["tracked_stock_metrics"]
 news_sentiment_collection = db["stock_news_sentimental"]
-@app.route("/", methods=["GET"])
+lstm_predictions_collection = db["lstm_prediction"]
+
+@web_api_module.route(env.route_web_api_main, methods=["GET"])
 def home():
     return "Welcome to the Stock Predictor Home Page api!"
 
-@app.route("/stock-data/<stock>", methods=["GET"])
+@web_api_module.route(env.route_web_api_stock_data + "<stock>", methods=["GET"])
 def stock_data(stock: str) -> dict:
     stock_data = trade_stock_data_collection.find_one({"stock_title": stock},{'_id': 0})
     return jsonify(stock_data) 
 
-@app.route("/tracked-stocks/<stock>")
+@web_api_module.route(env.route_web_api_tracked_stocks + "<stock>")
 def tracked_stocks(stock: str):
     tracked_stocks = tracked_stocks_collection.find({"stock_title": stock},{'_id': 0})
     return jsonify(tracked_stocks)
 
-@app.route("/buy-signal-all-stocks")
+@web_api_module.route(env.route_web_api_buy_signal_all_stocks)
 def all_tracked_stocks():
     all_tracked_stocks = tracked_stocks_collection.find({},{'_id': 0})
     return jsonify(list(all_tracked_stocks))
 
-@app.route("/training-data/<stock>")
+@web_api_module.route(env.route_web_api_training_data + "<stock>")
 def training_data(stock: str):
     stock_training_data = training_data_collection.find_one({"stock_title": stock},{'_id': 0})
     return jsonify(stock_training_data)
 
-@app.route("/result-data/<stock>")
+@web_api_module.route(env.route_web_api_result_data + "<stock>")
 def result_data(stock: str):
     prediction_result_data = prediction_metrics_collection.find_one({"stock_title": stock},{'_id': 0})
     return jsonify(prediction_result_data)
 
-@app.route('/stock-sentiment/<symbol>', methods=['GET'])
+@web_api_module.route(env.route_web_api_stock_sentiment +  "<symbol>", methods=['GET'])
 def get_stock_sentiment(symbol):
     doc = news_sentiment_collection.find_one({"stock_title": symbol})
 
@@ -51,6 +58,12 @@ def get_stock_sentiment(symbol):
     else:
         return jsonify(None)
 
+@web_api_module.route(env.route_web_api_lstm_prediction + "<stock>", methods=['GET'])
+def get_stock_lstm_prediction(stock: str):
+    lstm_doc = lstm_predictions_collection.find_one({"stock_title": stock},{'_id': 0})
+    return jsonify(lstm_doc)
 
-if __name__ == "__main__":
-    app.run(port=5001, debug=True)
+
+
+# if __name__ == "__main__":
+#     app.run(port=5001, debug=True)

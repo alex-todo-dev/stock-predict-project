@@ -5,10 +5,10 @@ import { trainingMetrics } from '../models/training_data';
 import { predictionMetrics } from '../models/prediction-metrics';
 import { CommonModule } from '@angular/common';
 import { CapitalizePipe } from '../capitalize.pipe';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {TooltipPosition} from '@angular/material/tooltip';
-import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {SentimentResult} from '../models/news-sentimental';
+import { MatTooltipModule} from '@angular/material/tooltip';
+import { TooltipPosition} from '@angular/material/tooltip';
+import { FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { SentimentResult} from '../models/news-sentimental';
 @Component({
     selector: 'app-stock-data-card',
     standalone: true,
@@ -34,8 +34,13 @@ export class StockDataCardComponent implements OnInit{
 
     this.apiService.get_tracked_stock_training_metrics(this.stockTitle).subscribe(data => {
       this.stockMetric = data;
-      console.log("mteric", this.stockMetric)
-    })
+      // console.log("mteric", this.stockMetric)
+    });
+
+    this.apiService.getLstmPredictions(this.stockTitle).subscribe(data=>{
+      // console.log("Stoct LSTM 5 days prediction")
+      // console.log(data)
+    });
   }
   constructor(private apiService: ApiStockService) { 
 

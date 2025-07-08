@@ -6,6 +6,8 @@ import { trainingMetrics } from '../models/training_data';
 import { Observable } from 'rxjs';
 import { predictionMetrics } from '../models/prediction-metrics';
 import { SentimentResult } from '../models/news-sentimental';
+import { lstmPredictionInterface } from '../models/lstm-prediction';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,6 +31,10 @@ export class ApiStockService {
 
   getSentiments(stock: string): Observable<SentimentResult> {
     return this.httpClient.get<SentimentResult>(apiUrls.base_url + apiUrls.get_news_sentimental + stock);
+  }
+
+  getLstmPredictions(stock: string): Observable<lstmPredictionInterface>  {
+    return this.httpClient.get<lstmPredictionInterface>(apiUrls.base_url + apiUrls.get_lstm_predictions + stock)
   }
 
 }

@@ -4,7 +4,9 @@ import { NgxChartsModule,Color, ScaleType } from '@swimlane/ngx-charts';
 import { ChartDataService } from '../services/chart-data.service';
 import { TrackedStock } from '../models/tracked-stocks.interface';
 import { chartDataLine, chartPoint } from '../models/chart-data';
-
+import { lstmPredictionInterface } from '../models/lstm-prediction';
+import { LstmPredictionDataService } from '../services/lstm-prediction-data.service';
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
     selector: 'app-stock-chart',
     standalone: true,
@@ -14,24 +16,33 @@ import { chartDataLine, chartPoint } from '../models/chart-data';
 })
 export class StockChartComponent implements OnInit {
     charTitle = 'Line Chart';
-    chartData:chartDataLine[] = []
+    chartData:any[] = [];
+    chartLines:any[] = [];
     private cardData: TrackedStock | null = null;
-    constructor(private chartDataService: ChartDataService) { }
+    private lstmChartData: lstmPredictionInterface | null = null;
+    constructor(private chartDataService: ChartDataService, 
+                private lstmDataService: LstmPredictionDataService,
+                private cd: ChangeDetectorRef
+    ) { }
+    
     ngOnInit(): void {
-        this.chartDataService.chartData$.subscribe(data => {
+      let predictedPriceLine;
+      let actualPricLine;
+      let predictedLstmLine; 
+      this.chartDataService.chartData$.subscribe(data => {
           if (data){
             this.chartData = [];
             this.cardData! = data;
-            console.log("chart update:", this.cardData);
+            // console.log("chart update:", this.cardData);
             // Gneretaing array from the recived data
             this.charTitle = this.cardData.stock_title;
-            let actualPricLine = this.cardData.days_tracking.map(
+            actualPricLine = this.cardData.days_tracking.map(
               obj => ({
                 name: new Date(obj.date),
                 value: obj.closing_price
               })
             );
-            let predictedPriceLine = this.cardData.next_day_predictions.map(
+            predictedPriceLine = this.cardData.next_day_predictions.map(
               obj => ({
                 name: new Date(obj.date),
                 value: obj.closing_price
@@ -39,11 +50,31 @@ export class StockChartComponent implements OnInit {
             );
             this.chartData.push({ name: 'Actual Price', series: actualPricLine });
             this.chartData.push({ name: 'Predicted Price', series: predictedPriceLine });
+            // this.reAssign();
           }
-          console.log("chart data:", this.chartData);
+          // console.log("chart data:", this.chartData);
         });
+        //  pull lstm predictions 
+      this.lstmDataService.chartData$.subscribe(data =>{
+        if(data){
+          this.lstmChartData = data;
+          console.log("Lstm data for stoc:", this.lstmChartData.next_five_day_predictions)
+          predictedLstmLine = this.lstmChartData.next_five_day_predictions.map( 
+            obj => ({
+              name : new Date(obj.date),
+              value: obj.price  
+          })
+        );
+          this.chartData.push({ name: 'LSTM predicted', series: predictedLstmLine });
+          
+          
+        }
+          this.reAssign();
+      });
+     
+      
     }
-    lineChartData = [
+    public lineChartData = [
         {
           name: 'Sales 2024',
           series: [
@@ -61,15 +92,26 @@ export class StockChartComponent implements OnInit {
             { name: 'Mar', value: 5900 },
             { name: 'Apr', value: 8000 }
           ]
+        },
+        {
+          name: 'Sales 2025',
+          series: [
+            
+            { name: 'May', value: 5900 },
+            { name: 'Jun', value: 8000 }
+          ]
         }
       ];
     
       // colorScheme = 'vivid'; // or 'cool', 'natural', etc.
-      colorScheme: Color = {
-        name: 'custom',
-        selectable: true,
-        group: ScaleType.Ordinal,
-        domain: ['#e6194b', '#3cb44b'] // red, green
-      };
+    colorScheme: Color = {
+    name: 'custom',
+    selectable: true,
+    group: ScaleType.Ordinal,
+    domain: ['#e6194b', '#3cb44b', '#4363d8'] // red, green, blue
+  };
 
+  reAssign(){
+    this.chartLines = this.chartData
+  }
 }

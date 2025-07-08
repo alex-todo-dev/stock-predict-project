@@ -24,6 +24,7 @@ def train_lstm_model() -> dict:
 
     lstm_model_path: str = env.lstm_model_path + f"{stock_title}_lstm.h5"
     lstm_scaler_path:str = env.lstm_model_path + f"{stock_title}_lstm_scaler.save"
+    lstm_scler_rsi_path:str = env.lstm_model_path + f"{stock_title}_lstm_rsi_scaler.save"
 
     # check if model if already exits and saved 
     if os.path.exists(lstm_model_path) and os.path.exists(lstm_scaler_path):
@@ -47,22 +48,35 @@ def train_lstm_model() -> dict:
     # Sort by date
     df = df.sort_values('Date')
 
+    # Drop NA 
+    df = df.dropna(subset=['RSI', 'Close']) 
+
     # Scale only the 'Close' column for prediction
     scaler = MinMaxScaler()
-    df['Close_scaled'] = scaler.fit_transform(df[['Close']])
 
+    # Scale both Close and RSI
+    scaler_close = MinMaxScaler()
+    scaler_rsi = MinMaxScaler()
+
+    # features scale
+    df['Close_scaled'] = scaler_close.fit_transform(df[['Close']])
+    df['RSI_scaled'] = scaler_rsi.fit_transform(df[['RSI']])
+     
     sequence_length = env.lstm_sequence_length  # e.g., use past 60 days to predict next 5
     future_days = env.lstm_future_days
-
-    # Split data features and y
+    
+    # Build sequences
     X, y = [], []
-    print(type(X))
+    close = df['Close_scaled'].values
+    rsi = df['RSI_scaled'].values
+
     for i in range(len(df) - sequence_length - future_days + 1):
-        X.append(df['Close_scaled'].values[i:i+sequence_length])
-        y.append(df['Close_scaled'].values[i+sequence_length:i+sequence_length+future_days])
+        seq = np.column_stack((close[i:i+sequence_length], rsi[i:i+sequence_length]))  # shape (60, 2)
+        X.append(seq)
+        y.append(close[i+sequence_length:i+sequence_length+future_days])  # shape (5,)
 
     X, y = np.array(X), np.array(y)
-    X = np.reshape(X, (X.shape[0], X.shape[1], 1))  # LSTM expects 3D input
+
     
     # Models create
     from tensorflow.keras.models import Sequential
@@ -70,48 +84,61 @@ def train_lstm_model() -> dict:
     from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
     import joblib
 
+    # ---------------- MODEL ---------------- #
     model = Sequential([
-    LSTM(64, return_sequences=False, input_shape=(X.shape[1], 1)),
-    Dense(future_days)
+        LSTM(64, return_sequences=False, input_shape=(X.shape[1], X.shape[2])),  # (60, 2)
+        Dense(future_days)
     ])
-
     model.compile(optimizer='adam', loss='mse')
     model.summary()
 
-    # chekpoint and save best model 
+    # ---------------- CALLBACKS ---------------- #
     checkpoint = ModelCheckpoint(
-    lstm_model_path,       # file to save
-    monitor='val_loss',         # what to monitor
-    save_best_only=True,        # only save if val_loss improves
-    mode='min',                 # lower val_loss is better
-    verbose=1)   
+        lstm_model_path,
+        monitor='val_loss',
+        save_best_only=True,
+        mode='min',
+        verbose=1
+    )
 
-    # when to stop and which model to save 
     early_stop = EarlyStopping(
-    monitor='val_loss',
-    patience=10,            # wait 10 epochs for improvement
-    restore_best_weights=True)
+        monitor='val_loss',
+        patience=10,
+        restore_best_weights=True
+    )
 
-    #model fit
+
+    # ---------------- TRAIN ---------------- #
     history = model.fit(
-    X, y,
-    epochs=1000,
-    batch_size=32,
-    validation_split=0.1,
-    callbacks=[checkpoint, early_stop])
+        X, y,
+        epochs=1000,
+        batch_size=32,
+        validation_split=0.1,
+        callbacks=[checkpoint, early_stop],
+        verbose=1
+    )
 
-    # Save scaler
-    joblib.dump(scaler, lstm_scaler_path)
+    # ---------------- SAVE SCALERS ---------------- #
+    joblib.dump(scaler_close, lstm_scaler_path)
+    joblib.dump(scaler_rsi, lstm_scler_rsi_path)
 
-    # pull metrics and store to mongo db 
-    # After training
-    final_train_mse = history.history['loss'][-1]
-    final_val_mse = history.history['val_loss'][-1]
+ 
+    
+    # ---------------- METRICS TO MONGO ---------------- #
+    final_train_mse = float(history.history['loss'][-1])
+    final_val_mse = float(history.history['val_loss'][-1])
 
-    collection_lstm_training_data.insert_one({"training_date": datetime.now(),
-                                              "stock_title": stock_title, 
-                                              "loss_mse": final_train_mse,
-                                              "val_loss": final_val_mse})
+
+    metrics_doc = {
+    "model_name": "lstm_close_rsi",
+    "date_trained": datetime.now(),
+    "train_mse_scaled": final_train_mse,
+    "val_mse_scaled": final_val_mse,
+    "sequence_length": sequence_length,
+    "future_days": future_days}
+
+    collection_lstm_training_data.insert_one(metrics_doc)
+
         
     logger.info(f"MODEL TRAINNER:Model trained for {stock_title} finished and saved, with MAR: {final_val_mse}")
 

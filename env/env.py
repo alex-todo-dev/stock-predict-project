@@ -29,6 +29,22 @@ route_start_lstm_prediction = '/lstm-prediction'
 route_tracked_stocks_metrics = '/tracked-stocks-metrics'
 # news anylysis route
 route_news_analysis = '/news-analysis'
+# route web api main route 
+route_web_api_main = "/"
+# route web api /stock-data/
+route_web_api_stock_data = "/stock-data/"
+# route web api /tracked-stocks/ 
+route_web_api_tracked_stocks = "/tracked-stocks/"
+# route buy signal all stock 
+route_web_api_buy_signal_all_stocks = "/buy-signal-all-stocks"
+# route web api "/training-data/ 
+route_web_api_training_data = "/training-data/"
+# route web apii /result-data/
+route_web_api_result_data = "/result-data/"
+# route web api /stock-sentiment/
+route_web_api_stock_sentiment = "/stock-sentiment/"
+# routre lstm prediction /lstm-predictions/ 
+route_web_api_lstm_prediction = "/lstm-predictions/"
 # packages NAMES 
 # first_stock_data_fetch
 first_data_fetch_module_name = 'FIRST_DATA_FETCH_MODULE'
@@ -40,6 +56,8 @@ store_data_mongo_name = 'STORE_DATA_TO_MONGO_MODULE'
 collect_buy_signal_name = 'COLLECT_BUY_SIGNAL_MODULE'
 # cleaner module 
 cleaner_module_name = 'CLEANER_MODULE'
+# lst prediction module name 
+lstm_module_prediction_name = 'LSTM_PREDICTION_NAME'
 # stock names
 STOCK_CSV_DATA_FAIL = "constituents.csv"
 # Mongo database setup
@@ -89,3 +107,5 @@ FIN_KEY = "d0nm841r01qn5ghkk9g0d0nm841r01qn5ghkk9gg"
 lstm_sequence_length = 60  # e.g., use past 60 days to predict next 5
 # lstm days predict
 lstm_future_days = 5
+# backend apis
+blue_print_back_end_api = "blue_print_web_api"

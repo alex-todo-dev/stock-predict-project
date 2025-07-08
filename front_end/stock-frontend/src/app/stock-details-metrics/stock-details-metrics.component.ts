@@ -21,7 +21,7 @@ export class StockDetailsMetricsComponent  implements OnInit{
   ngOnInit(): void {
     this.chartDataService.chartData$.subscribe(data => {
       if (data){
-        console.log("chart update:", this.cardData);
+        // console.log("chart update:", this.cardData);
         this.cardData = data;
         // Gneretaing array from the recived data
         this.charTitle = this.cardData.stock_title; 

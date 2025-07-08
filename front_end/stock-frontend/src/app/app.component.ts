@@ -19,7 +19,7 @@ import { PredictedMetricsComponent } from "./predicted-metrics/predicted-metrics
 export class AppComponent implements OnInit {
 
   ngOnInit(): void {
-    // this.openDialog();
+    this.openDialog();
   }
   title = 'ToDo AI';
 

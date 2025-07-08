@@ -7,6 +7,7 @@ from flask import Blueprint
 from datetime import datetime
 
 news_analysis_module = Blueprint(env.route_news_analysis, __name__)
+
 @news_analysis_module.route(env.route_news_analysis, methods=['GET'])
 def news_analysis()->str:
     print("news_analysis")

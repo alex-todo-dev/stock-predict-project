@@ -21,7 +21,7 @@ export class PredictedMetricsComponent implements OnInit {
   ngOnInit(): void {
     this.chartDataService.chartData$.subscribe(data => {
       if (data){
-        console.log("chart update:", this.cardData);
+        // console.log("chart update:", this.cardData);
         this.cardData = data;
         // Gneretaing array from the recived data
         this.charTitle = this.cardData.stock_title; 
@@ -34,7 +34,7 @@ export class PredictedMetricsComponent implements OnInit {
   loadPredictedMetrics(stock:string){
     this.apiService.get_predicted_error(stock).subscribe(data => {
       this.stockPredictMetric = data;
-      console.log("chart data from predict mterics component:", this.stockPredictMetric);
+      // console.log("chart data from predict mterics component:", this.stockPredictMetric);
     })
   }
 

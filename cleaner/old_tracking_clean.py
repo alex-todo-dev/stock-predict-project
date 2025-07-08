@@ -26,6 +26,7 @@ def clean_old_tracking() -> dict:
     buy_signal_collection = db['buy_signal_track']
     training_data_collection = db['training_data']
     lstm_training_data_collection = db[env.COLLECTION_LSTM_TRAINING_DATA]
+    collection_lstm_prediction = db['lstm_prediction']
 
     # Calculate the cut off date for the cleaning
     cut_off_date = datetime.now() - timedelta(days=env.cleaner_days_old)
@@ -40,6 +41,9 @@ def clean_old_tracking() -> dict:
     list_old_training_data = list(training_old_data)
     list_old_training_data = [old_trainning.get('stock_title') for old_trainning in list_old_training_data]
     delete_model_files(list_old_training_data)
+
+    # Delete lstm predictions 
+    collection_lstm_prediction.delete_many({'stock_title': {'$in': list_old_training_data}})
 
     # Delete old training data from the training_data collection
     deleted_items_from_training_collection = training_data_collection.delete_many({"training_date": {"$lt": cut_off_date}})
